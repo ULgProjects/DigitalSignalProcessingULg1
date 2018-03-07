@@ -1,15 +1,17 @@
+%% 
+%   Question 1
+%   Analyses the poles, zeros and impulse response given by an
+%   trenasfer function.
+%   The study is done with x_length samples.
+%
+
+
 function h = LTI_analysis(zer, pol, x_length)
 
-
-    figure
-    zplane(zer, pol);
-    title('zeros and poles');
-
+    poles_zeros_plot(zer, pol);
 
     x = 0:x_length - 1;
-    delta = @(n) n == 0;
-    step = @(n) n >= 0;
-    impulsion_delta = arrayfun(delta, x);
+    impulsion_delta = arrayfun(@(n) n == 0, x);
 
     %impulse response plot by convolution
     figure;
@@ -26,13 +28,12 @@ function h = LTI_analysis(zer, pol, x_length)
     impz(zer, pol, x_length);
 
     %expression of the impulse response 
-    [num, denom, rest] = residuez(zer, pol);
-    h = @(n) sum(num.*( denom.^n ) * step(n)) + sum(rest)*delta(n);
-
+    h = impulse_response(zer, pol);
+    
     h_n = arrayfun(h, x);
 
     subplot(3,1,3);
-    stem(x, h_n, 'filled')
+    stem(x, h_n, 'filled');
     title('Impulse response by inverse Z-transform');
     xlabel('n (samples)');
     ylabel('Amplitude');
